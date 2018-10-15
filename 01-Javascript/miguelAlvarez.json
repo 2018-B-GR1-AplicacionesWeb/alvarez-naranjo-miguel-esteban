@@ -1,4 +1,4 @@
-{
+[{
   "nombre": "Miguel",
   "edad": 21,
   "sueldo": 12.2,
@@ -8,4 +8,4 @@
     "nombre": "cachetes"
   }
 
-}
+}]
