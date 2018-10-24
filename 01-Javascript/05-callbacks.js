@@ -6,7 +6,7 @@ const nombreDelArchivo = '05-texto.txt';
 console.log('Inicio');
 fs.readFile(nombreDelArchivo,
     'utf-8',
-    (error, contenidoArchivo) => { //CallBack
+    (error, contenidoArchivo) => { //CallBack...
         if(error){
             console.error(error);
 
