@@ -75,9 +75,9 @@ const promesaAppendFile = new Promise(
                         (err) => {
                             if (err) {
                                 reject(err);
-                                totalArchivo = 'ERROR';
+
                             } else {
-                                console.log('Archivo creado');
+
                                 resolve(contenidoArchivoLeido + contenidoArchivo);
                             }
                         }
@@ -92,6 +92,7 @@ promesaAppendFile
 
     .then((contenidoArchivo) => {//las promesas tienen dos formas de resolverse, la primera
         console.log('Archivo creado');
+        console.log(contenidoArchivo)
 
     })
     .catch((err) => {//las promesas tienen dos formas de resolverse, la primera
