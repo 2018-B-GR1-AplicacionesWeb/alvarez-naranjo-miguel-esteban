@@ -52,6 +52,7 @@ appendFile('06-texto.txt',
 );
 
 
+
 // ['A','B','C']
 
 // 0-A.txt 'A'
