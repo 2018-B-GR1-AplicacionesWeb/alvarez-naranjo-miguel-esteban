@@ -74,7 +74,7 @@ const promesaAppendFile = new Promise(
                         contenidoArchivoLeido + contenidoArchivo,
                         (err) => {
                             if (err) {
-                                console.error('Error escribiendo');
+                                reject(err);
                                 totalArchivo = 'ERROR';
                             } else {
                                 console.log('Archivo creado');
@@ -89,11 +89,12 @@ const promesaAppendFile = new Promise(
 )
 
 promesaAppendFile
-    .catch((err) => {//las promesas tienen dos formas de resolverse, la primera
-        console.error('Error escribiendo');
 
-    })
     .then((contenidoArchivo) => {//las promesas tienen dos formas de resolverse, la primera
         console.log('Archivo creado');
+
+    })
+    .catch((err) => {//las promesas tienen dos formas de resolverse, la primera
+        console.error('Error escribiendo');
 
     })
