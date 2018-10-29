@@ -96,6 +96,6 @@ promesaAppendFile
 
     })
     .catch((err) => {//las promesas tienen dos formas de resolverse, la primera
-        console.error('Error escribiendo');
+        //console.error('Error escribiendo');
 
     })
