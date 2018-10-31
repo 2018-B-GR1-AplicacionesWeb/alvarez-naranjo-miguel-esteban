@@ -62,7 +62,7 @@ const respuesta = {
 const ejercicioDeArchivos = (arregloString)=>{
     console.log('Inicio');
     return new Promise(
-        (resolve) => {
+        (resolve, reject) => {
             const arregloRespuestas = [];
             arregloString
                 .forEach(
@@ -112,3 +112,21 @@ ejercicioDeArchivos(arregloStrings)
             console.log('Algo malo paso', resultadoError);
         }
     );
+
+//async sync
+
+const funcionConCallback = function (parametros, callback){
+    callback() //
+
+};
+
+// Promesas -> Promise
+
+const funcionConPromesa = function (paramatros){
+    return new Promise(
+        (resolve, reject) => {
+            resolve();
+            reject();
+        }
+    );
+};
