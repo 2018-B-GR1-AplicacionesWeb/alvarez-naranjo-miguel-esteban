@@ -52,3 +52,63 @@ nuevaPromesaLectura
         }
     );
 
+
+const respuesta = {
+    nombreArchivo :'',
+    contenidoArchivo :'',
+    error : ''
+};
+
+const ejercicioDeArchivos = (arregloString)=>{
+    console.log('Inicio');
+    return new Promise(
+        (resolve) => {
+            const arregloRespuestas = [];
+            arregloString
+                .forEach(
+                    (string, indice) => {
+                        const archivo = `${indice} - ${string}.txt`;
+                        const contenido = string;
+                        fs.writeFile(archivo,
+                            contenido,
+                            (error) => {
+                                const respuesta = {
+                                    nombreArchivo: archivo,
+                                    contenidoArchivo: contenido,
+                                    error: error
+
+                                };
+                                arregloRespuestas.push(respuesta);
+                                const tamañoRespuesta = arregloRespuestas.length;
+
+                                if (tamañoRespuesta === arregloString.length) {
+                                    //console.log(arregloRespuestas);
+                                    //callback(arregloRespuestas);
+                                    resolve(arregloRespuestas);
+                                }
+                            }
+                        );
+                    }
+                )
+        }
+    )
+}
+
+const arregloStrings =['A','B','C'];
+
+// ejercicioDeArchivos(arregloStrings,
+//     (arregloRespuestas) => {
+//         console.log(arregloRespuestas);
+//     }
+// )
+ejercicioDeArchivos(arregloStrings)
+    .then(
+        (arregloRespuestas) => {
+            console.log('Todo bien', arregloRespuestas);
+        }
+    )
+    .catch(
+        (resultadoError) => {
+            console.log('Algo malo paso', resultadoError);
+        }
+    );
