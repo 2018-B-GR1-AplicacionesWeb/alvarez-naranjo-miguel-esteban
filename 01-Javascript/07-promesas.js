@@ -52,50 +52,63 @@ nuevaPromesaLectura
         }
     );
 
-const promesaAppendFile = new Promise(
-    (resolve, reject)=>{
-        fs.readFile(nombreArchivo, 'utf-8',
-            (error, contenidoArchivoLeido) => {
-                if (error) {
-                    fs.writeFile(nombreArchivo, contenidoArchivo,
-                        (err) => {
-                            if (err) {
 
-                                reject(err)
-                            } else {
+const respuesta = {
+    nombreArchivo :'',
+    contenidoArchivo :'',
+    error : ''
+};
 
-                                resolve(contenidoArchivo)
+const ejercicioDeArchivos = (arregloString)=>{
+    console.log('Inicio');
+    return new Promise(
+        (resolve) => {
+            const arregloRespuestas = [];
+            arregloString
+                .forEach(
+                    (string, indice) => {
+                        const archivo = `${indice} - ${string}.txt`;
+                        const contenido = string;
+                        fs.writeFile(archivo,
+                            contenido,
+                            (error) => {
+                                const respuesta = {
+                                    nombreArchivo: archivo,
+                                    contenidoArchivo: contenido,
+                                    error: error
+
+                                };
+                                arregloRespuestas.push(respuesta);
+                                const tamañoRespuesta = arregloRespuestas.length;
+
+                                if (tamañoRespuesta === arregloString.length) {
+                                    //console.log(arregloRespuestas);
+                                    //callback(arregloRespuestas);
+                                    resolve(arregloRespuestas);
+                                }
                             }
-                        }
-                    );
-                } else {
-                    fs.writeFile(
-                        nombreArchivo,
-                        contenidoArchivoLeido + contenidoArchivo,
-                        (err) => {
-                            if (err) {
-                                reject(err);
+                        );
+                    }
+                )
+        }
+    )
+}
 
-                            } else {
+const arregloStrings =['A','B','C'];
 
-                                resolve(contenidoArchivoLeido + contenidoArchivo);
-                            }
-                        }
-                    );
-                }
-            }
-        );
-    }
-)
-
-promesaAppendFile
-
-    .then((contenidoArchivo) => {//las promesas tienen dos formas de resolverse, la primera
-        console.log('Archivo creado');
-        console.log(contenidoArchivo)
-
-    })
-    .catch((err) => {//las promesas tienen dos formas de resolverse, la primera
-        //console.error('Error escribiendo');
-
-    })
+// ejercicioDeArchivos(arregloStrings,
+//     (arregloRespuestas) => {
+//         console.log(arregloRespuestas);
+//     }
+// )
+ejercicioDeArchivos(arregloStrings)
+    .then(
+        (arregloRespuestas) => {
+            console.log('Todo bien', arregloRespuestas);
+        }
+    )
+    .catch(
+        (resultadoError) => {
+            console.log('Algo malo paso', resultadoError);
+        }
+    );
