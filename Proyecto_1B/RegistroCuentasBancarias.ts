@@ -2,7 +2,7 @@ const rxjs = require('rxjs');
 const inquirer = require('inquirer');
 const fs = require('fs');
 declare var Promise:any;
-const arregloDeJson: any = [];
+let arregloDeJson = [];
 import {opciones, crearCuentaFormulario} from './OpcionesFormulario'
 console.log('---------------------------------------------------\n');
 console.log('****BIENVENIDO AL REGISTRO DE CUENTAS BANCARIAS****\n');
@@ -15,7 +15,7 @@ inquirer
             inquirer
                 .prompt(crearCuentaFormulario)
                 .then(answersFormulario =>{
-                    console.log(JSON.stringify(answersFormulario, null, ''));
+
                     console.log('********************');
                     console.log(answersFormulario);
                     //guardarEnArchivo('jsonUsuarios.json', JSON.stringify(answersFormulario, null, ''))
@@ -23,12 +23,22 @@ inquirer
                         .then(
                             (contenidoArchivo) => {
                                 console.log('contenido leido\n', contenidoArchivo);
-                                return nuevaPromesaEscritura(contenidoArchivo, JSON.stringify(answersFormulario, null, '')+'\n')
+
+                                contenidoArchivo.split('\n').map(function(linea){
+                                    if(linea!==''){
+                                        arregloDeJson.push(JSON.parse(linea));
+                                    }
+                                });
+                                return nuevaPromesaEscrituraTXT(contenidoArchivo, JSON.stringify(answersFormulario)+'\n');
+
+
+
                             }
                         )
                         .then(
-                            (contenidoCompleto) => {
+                            async (contenidoCompleto) => {
                                 console.log('USUARIO REGISTRADO', contenidoCompleto);
+                                return await nuevaPromesaEscritura(JSON.stringify(arregloDeJson, null, ''));
                             }
                         )
                         .catch(
@@ -46,7 +56,7 @@ inquirer
 
 
 
-const guardarEnArchivo = (nombreDelArchivo, datos) =>{
+/*const guardarEnArchivo = (nombreDelArchivo, datos) =>{
     fs.writeFile(nombreDelArchivo,datos,
         (error)=> {
             return new Promise(
@@ -59,7 +69,7 @@ const guardarEnArchivo = (nombreDelArchivo, datos) =>{
                 }
             )
         });
-}
+}*/
 
 const nuevaPromesaLectura = new Promise(
     (resolve) => {
@@ -75,7 +85,25 @@ const nuevaPromesaLectura = new Promise(
 );
 
 
-const nuevaPromesaEscritura = (contenidoLeido, datos) => {
+const nuevaPromesaEscritura = (datos) => {
+    return new Promise(
+        (resolve, reject) => {
+
+            //const contenido = contenidoLeido ? contenidoLeido + datos : datos;
+
+            fs.writeFile('jsonUsuarios.json', datos,
+                (err,) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(datos);
+                    }
+                });
+        }
+    );
+};
+
+const nuevaPromesaEscrituraTXT = (contenidoLeido, datos) => {
     return new Promise(
         (resolve, reject) => {
 
