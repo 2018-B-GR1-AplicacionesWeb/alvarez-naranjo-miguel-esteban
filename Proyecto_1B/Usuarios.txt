@@ -1,0 +1,4 @@
+{"nombre":"Miguel alvarez","clave":"asdf4","tipoCuenta":"Cuenta de Ahorro","saldo":"125.2"}
+{"nombre":"Jonathan caiza","clave":"45a","tipoCuenta":"Cuenta de Crédito","saldo":"45.20"}
+{"nombre":"Juan ","clave":"45sd","tipoCuenta":"Cuenta de Crédito","saldo":"12.25"}
+{"nombre":"miguel ","clave":"asdf5","tipoCuenta":"Cuenta de Ahorro","saldo":"20.3"}

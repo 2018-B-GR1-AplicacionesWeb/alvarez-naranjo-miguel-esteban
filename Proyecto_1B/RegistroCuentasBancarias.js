@@ -21,13 +21,13 @@ inquirer
             //guardarEnArchivo('jsonUsuarios.json', JSON.stringify(answersFormulario, null, ''))
             nuevaPromesaLectura
                 .then(function (contenidoArchivo) {
-                console.log('Todo bien', contenidoArchivo);
-                return nuevaPromesaEscritura(contenidoArchivo, JSON.stringify(answersFormulario, null, ''));
+                console.log('contenido leido\n', contenidoArchivo);
+                return nuevaPromesaEscritura(contenidoArchivo, JSON.stringify(answersFormulario, null, '') + '\n');
             })
                 .then(function (contenidoCompleto) {
                 console.log('USUARIO REGISTRADO', contenidoCompleto);
             })["catch"](function (resultadoError) {
-                console.log('Algo malo paso', resultadoError);
+                console.log('Error...\n', resultadoError);
             });
         });
     }
@@ -48,7 +48,7 @@ var guardarEnArchivo = function (nombreDelArchivo, datos) {
     });
 };
 var nuevaPromesaLectura = new Promise(function (resolve) {
-    fs.readFile('jsonUsuarios.json', 'utf-8', function (err, contenidoArchivo) {
+    fs.readFile('Usuarios.txt', 'utf-8', function (err, contenidoArchivo) {
         if (err) {
             resolve(err);
         }
@@ -60,7 +60,7 @@ var nuevaPromesaLectura = new Promise(function (resolve) {
 var nuevaPromesaEscritura = function (contenidoLeido, datos) {
     return new Promise(function (resolve, reject) {
         var contenido = contenidoLeido ? contenidoLeido + datos : datos;
-        fs.writeFile('jsonUsuarios.json', contenido, function (err) {
+        fs.writeFile('Usuarios.txt', contenido, function (err) {
             if (err) {
                 reject(err);
             }

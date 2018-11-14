@@ -22,8 +22,8 @@ inquirer
                     nuevaPromesaLectura
                         .then(
                             (contenidoArchivo) => {
-                                console.log('Todo bien', contenidoArchivo);
-                                return nuevaPromesaEscritura(contenidoArchivo, JSON.stringify(answersFormulario, null, ''))
+                                console.log('contenido leido\n', contenidoArchivo);
+                                return nuevaPromesaEscritura(contenidoArchivo, JSON.stringify(answersFormulario, null, '')+'\n')
                             }
                         )
                         .then(
@@ -33,7 +33,7 @@ inquirer
                         )
                         .catch(
                             (resultadoError) => {
-                                console.log('Algo malo paso', resultadoError);
+                                console.log('Error...\n', resultadoError);
                             }
                         );
                 });
@@ -63,7 +63,7 @@ const guardarEnArchivo = (nombreDelArchivo, datos) =>{
 
 const nuevaPromesaLectura = new Promise(
     (resolve) => {
-        fs.readFile('jsonUsuarios.json', 'utf-8',
+        fs.readFile('Usuarios.txt', 'utf-8',
             (err, contenidoArchivo) => {
                 if (err) {
                     resolve(err);
@@ -81,7 +81,7 @@ const nuevaPromesaEscritura = (contenidoLeido, datos) => {
 
             const contenido = contenidoLeido ? contenidoLeido + datos : datos;
 
-            fs.writeFile('jsonUsuarios.json', contenido,
+            fs.writeFile('Usuarios.txt', contenido,
                 (err,) => {
                     if (err) {
                         reject(err);
