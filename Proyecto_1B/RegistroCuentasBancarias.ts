@@ -2,6 +2,7 @@ const rxjs = require('rxjs');
 const inquirer = require('inquirer');
 const fs = require('fs');
 declare var Promise:any;
+const arregloDeJson: any = [];
 import {opciones, crearCuentaFormulario} from './OpcionesFormulario'
 console.log('---------------------------------------------------\n');
 console.log('****BIENVENIDO AL REGISTRO DE CUENTAS BANCARIAS****\n');
@@ -27,7 +28,7 @@ inquirer
                         )
                         .then(
                             (contenidoCompleto) => {
-                                console.log('Contenido completo', contenidoCompleto);
+                                console.log('USUARIO REGISTRADO', contenidoCompleto);
                             }
                         )
                         .catch(
@@ -65,7 +66,7 @@ const nuevaPromesaLectura = new Promise(
         fs.readFile('jsonUsuarios.json', 'utf-8',
             (err, contenidoArchivo) => {
                 if (err) {
-                    resolve('');
+                    resolve(err);
                 } else {
                     resolve(contenidoArchivo);
                 }

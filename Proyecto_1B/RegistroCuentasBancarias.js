@@ -3,6 +3,7 @@ exports.__esModule = true;
 var rxjs = require('rxjs');
 var inquirer = require('inquirer');
 var fs = require('fs');
+var arregloDeJson = [];
 var OpcionesFormulario_1 = require("./OpcionesFormulario");
 console.log('---------------------------------------------------\n');
 console.log('****BIENVENIDO AL REGISTRO DE CUENTAS BANCARIAS****\n');
@@ -24,7 +25,7 @@ inquirer
                 return nuevaPromesaEscritura(contenidoArchivo, JSON.stringify(answersFormulario, null, ''));
             })
                 .then(function (contenidoCompleto) {
-                console.log('Contenido completo', contenidoCompleto);
+                console.log('USUARIO REGISTRADO', contenidoCompleto);
             })["catch"](function (resultadoError) {
                 console.log('Algo malo paso', resultadoError);
             });
@@ -49,7 +50,7 @@ var guardarEnArchivo = function (nombreDelArchivo, datos) {
 var nuevaPromesaLectura = new Promise(function (resolve) {
     fs.readFile('jsonUsuarios.json', 'utf-8', function (err, contenidoArchivo) {
         if (err) {
-            resolve('');
+            resolve(err);
         }
         else {
             resolve(contenidoArchivo);
