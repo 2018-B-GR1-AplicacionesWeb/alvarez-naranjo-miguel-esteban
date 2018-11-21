@@ -17,3 +17,4 @@
 {"nombre":"asdf asdf","clave":"15515d","tipoCuenta":"Cuenta de Ahorro","saldo":"5151515151"}
 {"nombre":"jonatan","clave":"15d","tipoCuenta":"Cuenta de Ahorro","saldo":"999"}
 {"nombre":"Esteban Alvarez","clave":"sdf33","tipoCuenta":"Cuenta de Crédito","saldo":"200"}
+{"nombre":"miguel","clave":"15s","tipoCuenta":"Cuenta de Ahorro","saldo":"152"}
