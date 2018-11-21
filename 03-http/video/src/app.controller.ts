@@ -12,14 +12,17 @@ import {
 } from '@nestjs/common';
 import {AppService} from './app.service';
 import {Observable, of} from "rxjs";
-import {Request} from "express";
+import {Request, Response} from "express";
 
 @Controller()  //decoradores
 // Controller('usuario')
 // http://localhost:3000/usuario
 export class AppController {
-    constructor(private readonly appService: AppService) {
+    // public servicio:AppService;
+    constructor(private readonly _appService: AppService) {  // NO ES UN CONSTRUCTOR
+        // this.servicio = servicio;
     }
+
 
     @Get() // http://ip:puerto
     // @Get('crear')
@@ -97,17 +100,28 @@ export class AppController {
         @Body('nombre') nombre: string,
         @Headers() cabeceras, // Cabeceras de peticion,
         @Headers('seguridad') codigo, // Cabeceras de peticion
-        @Res() res,
-        @Req() req: Request,
+        @Res() res: Response,
+        @Req() req: Request | any,
     ) {
         // crear usuario
-        console.log('Cookies', req.cookies);
+        console.log('Cookies', req.cookies);  // LEIDO
+        console.log('Cookies', req.secret);
+        console.log('Cookies Seguras', req.signedCookies);  // LEIDO
         console.log(usuario);
         console.log(cabeceras);
 
         if (codigo === '1234') {
+
+            const bdd = this._appService.crearUsuario(usuario);
+
             res.append('token', '5678'); // AQUI
-            res.send('ok');
+            res.cookie("app", "web"); // INSEGURA
+            res.cookie("segura", "secreto", {
+                signed: true
+            });
+
+            res.json(bdd);
+
         } else {
             throw new UnauthorizedException({  // MALO
                 mensaje: 'Error de autorizacion',
