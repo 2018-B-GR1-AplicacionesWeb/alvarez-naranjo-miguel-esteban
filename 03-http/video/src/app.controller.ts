@@ -122,7 +122,7 @@ export class AppController {
 }
 
 
-interface Usuario {
+export interface Usuario {
     nombre: string;
 }
 
