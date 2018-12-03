@@ -62,7 +62,7 @@ const respuesta = {
 const ejercicioDeArchivos = (arregloString)=>{
     console.log('Inicio');
     return new Promise(
-        (resolve) => {
+
             const arregloRespuestas = [];
             arregloString
                 .forEach(
