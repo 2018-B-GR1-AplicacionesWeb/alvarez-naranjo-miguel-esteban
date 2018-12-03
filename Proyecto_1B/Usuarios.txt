@@ -1,0 +1,20 @@
+{"nombre":"Miguel alvarez","clave":"asdf4","tipoCuenta":"Cuenta de Ahorro","saldo":"125.2"}
+{"nombre":"Jonathan caiza","clave":"45a","tipoCuenta":"Cuenta de Crédito","saldo":"45.20"}
+{"nombre":"Juan ","clave":"45sd","tipoCuenta":"Cuenta de Crédito","saldo":"12.25"}
+{"nombre":"miguel ","clave":"asdf5","tipoCuenta":"Cuenta de Ahorro","saldo":"20.3"}
+{"nombre":"Maria Jose","clave":"asdf25","tipoCuenta":"Cuenta de Ahorro","saldo":"158.5"}
+{"nombre":"Maria Emilia","clave":"asdf4","tipoCuenta":"Cuenta de Crédito","saldo":"100.20"}
+{"nombre":"hola mundo","clave":"sadf5","tipoCuenta":"Cuenta de Ahorro","saldo":"100.02"}
+{"nombre":"HOLA MUNDOOO","clave":"15ad","tipoCuenta":"Cuenta de Crédito","saldo":"120.30"}
+{"nombre":"asdf asdfasdf","clave":"15as","tipoCuenta":"Cuenta de Ahorro","saldo":"2"}
+{"nombre":"miguel esteban","clave":"asdf5","tipoCuenta":"Cuenta de Crédito","saldo":"15.15"}
+{"nombre":"sadf","clave":"asdf5","tipoCuenta":"Cuenta de Ahorro","saldo":"999"}
+{"nombre":"asdfasdfasdfasdf asdfasdfasdf","clave":"asdf8","tipoCuenta":"Cuenta de Ahorro","saldo":"66969"}
+{"nombre":"owrieuiru","clave":"879we","tipoCuenta":"Cuenta de Ahorro","saldo":"879"}
+{"nombre":"esteban naranjo","clave":"asdf5","tipoCuenta":"Cuenta de Ahorro","saldo":"51"}
+{"nombre":"asdf","clave":"asdf4","tipoCuenta":"Cuenta de Ahorro","saldo":"100"}
+{"nombre":"sdfaljkasdlkjska lksadfkjlafds","clave":"15d","tipoCuenta":"Cuenta de Ahorro","saldo":"111111"}
+{"nombre":"asdf asdf","clave":"15515d","tipoCuenta":"Cuenta de Ahorro","saldo":"5151515151"}
+{"nombre":"jonatan","clave":"15d","tipoCuenta":"Cuenta de Ahorro","saldo":"999"}
+{"nombre":"Esteban Alvarez","clave":"sdf33","tipoCuenta":"Cuenta de Crédito","saldo":"200"}
+{"nombre":"miguel","clave":"15s","tipoCuenta":"Cuenta de Ahorro","saldo":"152"}

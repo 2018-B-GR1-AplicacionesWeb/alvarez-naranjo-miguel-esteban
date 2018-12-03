@@ -51,51 +51,7 @@ appendFile('06-texto.txt',
     }
 );
 
-const promesaAppendFile = new Promise(
-    (resolve, reject)=>{
-        fs.readFile(nombreArchivo, 'utf-8',
-            (error, contenidoArchivoLeido) => {
-                if (error) {
-                    fs.writeFile(nombreArchivo, contenidoArchivo,
-                        (err) => {
-                            if (err) {
 
-                                reject(err)
-                            } else {
-
-                                resolve(contenidoArchivo)
-                            }
-                        }
-                    );
-                } else {
-                    fs.writeFile(
-                        nombreArchivo,
-                        contenidoArchivoLeido + contenidoArchivo,
-                        (err) => {
-                            if (err) {
-                                console.error('Error escribiendo');
-                                totalArchivo = 'ERROR';
-                            } else {
-                                console.log('Archivo creado');
-                                resolve(contenidoArchivoLeido + contenidoArchivo);
-                            }
-                        }
-                    );
-                }
-            }
-        );
-    }
-)
-
-promesaAppendFile
-    .catch((err) => {//las promesas tienen dos formas de resolverse, la primera
-        console.error('Error escribiendo');
-
-    })
-    .then((contenidoArchivo) => {//las promesas tienen dos formas de resolverse, la primera
-        console.log('Archivo creado');
-
-    })
 
 // ['A','B','C']
 
