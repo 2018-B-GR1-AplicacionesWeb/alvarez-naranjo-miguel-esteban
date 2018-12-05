@@ -1,1 +1,1 @@
-{"usuarios":[{"id":"1","nombre":"Miguel Esteban Alvarez","clave":"4ds","tipoCuenta":"Cuenta de Ahorro","saldo":"15.20"},{"id":"3","nombre":"Valeria","clave":"78d","tipoCuenta":"Cuenta de Crédito","saldo":"150.20"}]}
+{"usuarios":[{"id":"1","nombre":"Miguel","clave":"4ds","tipoCuenta":"Cuenta de Ahorro","saldo":"15.20"}]}
