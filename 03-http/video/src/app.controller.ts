@@ -13,13 +13,17 @@ import {
 import {AppService} from './app.service';
 import {Observable, of} from "rxjs";
 import {Request, Response} from "express";
+import {NoticiaService} from "./noticia.service";
 
 @Controller()  //decoradores
 // Controller('usuario')
 // http://localhost:3000/usuario
 export class AppController {
+
+
     // public servicio:AppService;
-    constructor(private readonly _appService: AppService) {  // NO ES UN CONSTRUCTOR
+    constructor(private readonly _appService: AppService,
+                private readonly _noticiaService: NoticiaService) {  // NO ES UN CONSTRUCTOR
         // this.servicio = servicio;
     }
 
@@ -46,12 +50,21 @@ export class AppController {
 
     @Get('adiosMundo') // url
     adiosMundo(): string {
-        return 'Adios Mundo';
+        return 'Adios mundo'
     }
 
     @Post('adiosMundo') // url
-    adiosMundoPOST(): string {
-        return 'Adios Mundo POST';
+    adiosMundoPOST(
+        @Res() response,
+    ) {
+        response.render(
+            'inicio',
+            {
+                usuario: 'Adrian',
+                arreglo: [],
+                booleano: true,
+            }
+        );
     }
 
     @Get('adiosMundoPromesa') // url
@@ -133,11 +146,63 @@ export class AppController {
     }
 
 
+    @Get('inicio')
+    inicio(
+        @Res() response,
+    ) {
+        response.render(
+            'inicio',
+            {
+                usuario: 'Adrian',
+                arreglo: this._noticiaService.arreglo, // AQUI!
+                booleano: false,
+            }
+        );
+    }
+
+    @Post('eliminar/:idNoticia')
+    eliminar(
+        @Res() response,
+        @Param('idNoticia') idNoticia: string,
+    ) {
+        this._noticiaService.eliminar(Number(idNoticia));
+        response.redirect('/inicio')
+    }
+
+    @Get('crear-noticia')
+    crearNoticiaRuta(
+        @Res() response
+    ) {
+        response.render(
+            'crear-noticia'
+        )
+    }
+
+    @Post('crear-noticia')
+    crearNoticiaFuncion(
+        @Res() response,
+        @Body() noticia: Noticia
+    ) {
+        this._noticiaService.crear(noticia)
+
+        response.redirect(
+            '/inicio'
+        )
+    }
+
+
 }
 
 
 export interface Usuario {
     nombre: string;
 }
+
+export interface Noticia {
+    id?: number;
+    titulo: string;
+    descripcion: string;
+}
+
 
 // http://localhost:3000

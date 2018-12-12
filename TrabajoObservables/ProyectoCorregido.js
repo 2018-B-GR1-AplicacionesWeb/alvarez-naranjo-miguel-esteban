@@ -1,7 +1,6 @@
 var inquirer = require('inquirer');
 var fs = require('fs');
 var rxjs = require('rxjs');
-var timer = require('rxjs').timer;
 var mergeMap = require('rxjs/operators').mergeMap;
 var map = require('rxjs/operators').map;
 var nombreDelArchivo = 'bdd.json';
@@ -43,8 +42,19 @@ var preguntaBuscarNombreUsuario = [
 ];
 var preguntaEdicionUsuario = [
     { type: 'input', name: 'nombre', message: 'Cual es el nuevo nombre? ' },
+    { type: 'input', name: 'saldo', message: 'Ingrese saldo actualizado: ',
+        validate: function (value) {
+            var RE = /^\d*(\.\d{1})?\d{0,1}$/;
+            if (RE.test(value)) {
+                return true;
+            }
+            else {
+                return 'El saldo debe ser un numero con dos decimales';
+            }
+        }
+    }
 ];
-function inicialiarBDD() {
+function inicializarBDD() {
     return new Promise(function (resolve, reject) {
         fs.readFile(nombreDelArchivo, 'utf-8', function (error, contenidoArchivo) {
             if (error) {
@@ -73,9 +83,9 @@ function inicialiarBDD() {
     });
 }
 function main() {
-    var respuestaBDD$ = rxjs.from(inicialiarBDD());
+    var respuestaBDD$ = rxjs.from(inicializarBDD());
     respuestaBDD$
-        .pipe(preguntarOpcionesMenu(), opcionesRespuesta(), ejecutarAcccion(), guardarBaseDeDatos())
+        .pipe(preguntarOpcionesMenu(), opcionesRespuesta(), menuDeOpciones(), guardarBaseDeDatos())
         .subscribe(function (data) {
         // console.log(data);
     }, function (error) {
@@ -128,12 +138,12 @@ function opcionesRespuesta() {
                     return respuestaBDD;
                 }));
             case 'Buscar':
-                return buscarClientePorNombre(respuestaBDD);
+                return buscarPorNombre(respuestaBDD);
                 break;
             case 'Actualizar':
-                return preguntarIdCliente(respuestaBDD);
+                return preguntarPorIDUsuario(respuestaBDD);
             case 'Borrar':
-                return eliminarPorNombre(respuestaBDD);
+                return eliminarPorNombreUsuario(respuestaBDD);
                 break;
         }
     });
@@ -145,15 +155,13 @@ function guardarBaseDeDatos() {
         return rxjs.from(guardarBDD(respuestaBDD.bdd));
     });
 }
-function ejecutarAcccion() {
-    return map(// Respuesta del anterior OBS
+function menuDeOpciones() {
+    return map(// respuesta del anterior observable
     function (respuestaBDD) {
         var opcion = respuestaBDD.opcionMenu.opcionMenu;
         switch (opcion) {
             case 'Crear':
                 var cliente = respuestaBDD.usuario;
-                /*******************************************************************************>>>>>>>>>>*/
-                // console.log(respuestaBDD.bdd.clientes);
                 respuestaBDD.bdd.usuarios.push(cliente);
                 console.log('Usuario registrado:\n');
                 return respuestaBDD;
@@ -164,7 +172,12 @@ function ejecutarAcccion() {
                 return respuestaBDD;
             case 'Buscar':
                 // console.log(respuestaBDD.bdd)
-                console.log('Usuario:\n', respuestaBDD.usuario);
+                if (respuestaBDD.usuario) {
+                    console.log('Usuario:\n', respuestaBDD.usuario);
+                }
+                else {
+                    console.log('Usuario no Encontrado en la Base de Datos');
+                }
                 return respuestaBDD;
             case 'Borrar':
                 console.log('Usuario Eliminado:', respuestaBDD.bdd.usuarios);
@@ -172,12 +185,11 @@ function ejecutarAcccion() {
         }
     });
 }
-function preguntarIdCliente(respuestaBDD) {
+function preguntarPorIDUsuario(respuestaBDD) {
     return rxjs
         .from(inquirer.prompt(preguntaBuscarUsuario)) //*********************
-        .pipe(mergeMap(// RESP ANT OBS
+        .pipe(mergeMap(// respuesta del anterior observable
     function (respuesta) {
-        // console.log(respuesta);
         var idDelUsuario = respuestaBDD.bdd
             .usuarios
             .findIndex(// -1
@@ -185,9 +197,9 @@ function preguntarIdCliente(respuestaBDD) {
             console.log(usuario);
             return usuario.id === respuesta.idUsuario;
         });
-        if (idDelUsuario === -1) {
+        if (idDelUsuario === '-1') {
             console.log('El id no existe, Intente nuevamente \n');
-            return preguntarIdCliente(respuestaBDD);
+            return preguntarPorIDUsuario(respuestaBDD);
         }
         else {
             respuestaBDD.idUsuario = idDelUsuario;
@@ -206,7 +218,7 @@ function preguntarIdCliente(respuestaBDD) {
         }
     }));
 }
-function buscarClientePorNombre(respuestaBDD) {
+function buscarPorNombre(respuestaBDD) {
     return rxjs
         .from(inquirer.prompt(preguntaBuscarNombreUsuario)) //*********************
         .pipe(mergeMap(// RESP ANT OBS
@@ -219,14 +231,19 @@ function buscarClientePorNombre(respuestaBDD) {
         return rxjs.of(respuestaBDD);
     }));
 }
-function eliminarPorNombre(respuestaBDD) {
+function eliminarPorNombreUsuario(respuestaBDD) {
     return rxjs.from(inquirer.prompt(preguntaEliminarPorNombre)) //***************************
         .pipe(mergeMap(function (respuesta) {
         var indiceDelNombre = respuestaBDD.bdd.usuarios.findIndex(function (cliente) {
             return cliente.nombre === respuesta.nombre;
         });
-        console.log(indiceDelNombre);
-        var resultadoSplice = respuestaBDD.bdd.usuarios.splice(indiceDelNombre, 1);
+        //console.log(indiceDelNombre)
+        if (indiceDelNombre === -1) {
+            console.log('No existe el usuario en la base de datos\n');
+        }
+        else {
+            var resultadoSplice = respuestaBDD.bdd.usuarios.splice(indiceDelNombre, 1);
+        }
         return rxjs.of(respuestaBDD);
     }));
 }

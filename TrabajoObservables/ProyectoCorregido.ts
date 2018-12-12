@@ -3,7 +3,6 @@ declare var Promise;
 const inquirer = require('inquirer');
 const fs = require('fs');
 const rxjs = require('rxjs');
-const timer = require('rxjs').timer;
 const mergeMap = require('rxjs/operators').mergeMap;
 const map = require('rxjs/operators').map;
 const nombreDelArchivo = 'bdd.json';
@@ -50,17 +49,27 @@ const preguntaBuscarNombreUsuario = [
 
 const preguntaEdicionUsuario = [
     {type: 'input', name: 'nombre', message: 'Cual es el nuevo nombre? '},
+    {type: 'input', name: 'saldo', message: 'Ingrese saldo actualizado: ',
+        validate: function (value) {
+            var RE = /^\d*(\.\d{1})?\d{0,1}$/;
+            if (RE.test(value)) {
+                return true;
+            } else {
+                return 'El saldo debe ser un numero con dos decimales';
+            }
+        }
+    }
 ];
 
 
 
-function inicialiarBDD() {
+function inicializarBDD() {
     return new Promise(
         (resolve, reject) => {
             fs.readFile(
                 nombreDelArchivo,
                 'utf-8',
-                (error, contenidoArchivo) => { // CALLBACK
+                (error, contenidoArchivo) => { //callback
                     if (error) {
                         fs.writeFile(
                             nombreDelArchivo,
@@ -96,12 +105,12 @@ function inicialiarBDD() {
 
 
 function main() {
-    const respuestaBDD$ = rxjs.from(inicialiarBDD());
+    const respuestaBDD$ = rxjs.from(inicializarBDD());
     respuestaBDD$
         .pipe(
             preguntarOpcionesMenu(),
             opcionesRespuesta(),
-            ejecutarAcccion(),
+            menuDeOpciones(),
             guardarBaseDeDatos()
         )
         .subscribe(
@@ -183,12 +192,12 @@ function opcionesRespuesta() {
                             )
                         );
                 case 'Buscar':
-                    return buscarClientePorNombre(respuestaBDD);
+                    return buscarPorNombre(respuestaBDD);
                     break;
                 case 'Actualizar':
-                    return preguntarIdCliente(respuestaBDD);
+                    return preguntarPorIDUsuario(respuestaBDD);
                 case 'Borrar':
-                    return eliminarPorNombre(respuestaBDD);
+                    return eliminarPorNombreUsuario(respuestaBDD);
                     break;
             }
         }
@@ -204,15 +213,14 @@ function guardarBaseDeDatos() {
     )
 }
 
-function ejecutarAcccion() {
-    return map( // Respuesta del anterior OBS
+function menuDeOpciones() {
+    return map( // respuesta del anterior observable
         (respuestaBDD: RespuestaBDD) => {
             const opcion = respuestaBDD.opcionMenu.opcionMenu;
             switch (opcion) {
                 case 'Crear':
                     const cliente:Usuario = respuestaBDD.usuario;
-                    /*******************************************************************************>>>>>>>>>>*/
-                    // console.log(respuestaBDD.bdd.clientes);
+
                     respuestaBDD.bdd.usuarios.push(cliente);
                     console.log('Usuario registrado:\n')
                     return respuestaBDD;
@@ -223,7 +231,13 @@ function ejecutarAcccion() {
                     return respuestaBDD;
                 case 'Buscar':
                     // console.log(respuestaBDD.bdd)
-                    console.log('Usuario:\n',respuestaBDD.usuario);
+                    if(respuestaBDD.usuario){
+                        console.log('Usuario:\n',respuestaBDD.usuario);
+
+                    }else{
+                        console.log('Usuario no Encontrado en la Base de Datos');
+                    }
+
                     return respuestaBDD;
                 case 'Borrar':
                     console.log('Usuario Eliminado:', respuestaBDD.bdd.usuarios);
@@ -233,13 +247,13 @@ function ejecutarAcccion() {
     )
 }
 
-function preguntarIdCliente(respuestaBDD: RespuestaBDD) {
+function preguntarPorIDUsuario(respuestaBDD: RespuestaBDD) {
     return rxjs
         .from(inquirer.prompt(preguntaBuscarUsuario)) //*********************
         .pipe(
-            mergeMap( // RESP ANT OBS
+            mergeMap( // respuesta del anterior observable
                 (respuesta: BuscarUsuarioPorId) => {
-                    // console.log(respuesta);
+
                     const idDelUsuario = respuestaBDD.bdd
                         .usuarios
                         .findIndex( // -1
@@ -248,9 +262,9 @@ function preguntarIdCliente(respuestaBDD: RespuestaBDD) {
                                 return usuario.id === respuesta.idUsuario
                             }
                         );
-                    if (idDelUsuario === -1) {
+                    if (idDelUsuario === '-1') {
                         console.log('El id no existe, Intente nuevamente \n');
-                        return preguntarIdCliente(respuestaBDD);
+                        return preguntarPorIDUsuario(respuestaBDD);
                     } else {
                         respuestaBDD.idUsuario = idDelUsuario;
                         return rxjs
@@ -275,7 +289,7 @@ function preguntarIdCliente(respuestaBDD: RespuestaBDD) {
         );
 }
 
-function buscarClientePorNombre(respuestaBDD: RespuestaBDD) {
+function buscarPorNombre(respuestaBDD: RespuestaBDD) {
     return rxjs
         .from(inquirer.prompt(preguntaBuscarNombreUsuario))//*********************
         .pipe(
@@ -294,7 +308,7 @@ function buscarClientePorNombre(respuestaBDD: RespuestaBDD) {
         );
 }
 
-function eliminarPorNombre(respuestaBDD: RespuestaBDD) {
+function eliminarPorNombreUsuario(respuestaBDD: RespuestaBDD) {
     return rxjs.from(inquirer.prompt(preguntaEliminarPorNombre))//***************************
         .pipe(
             mergeMap(
@@ -302,8 +316,13 @@ function eliminarPorNombre(respuestaBDD: RespuestaBDD) {
                     const indiceDelNombre = respuestaBDD.bdd.usuarios.findIndex((cliente)=>{
                         return cliente.nombre === respuesta.nombre;
                     });
-                    console.log(indiceDelNombre)
-                    const resultadoSplice = respuestaBDD.bdd.usuarios.splice(indiceDelNombre,1);
+                    //console.log(indiceDelNombre)
+                    if(indiceDelNombre === -1){
+                        console.log('No existe el usuario en la base de datos\n');
+                    }else{
+                        const resultadoSplice = respuestaBDD.bdd.usuarios.splice(indiceDelNombre,1);
+                    }
+
                     return rxjs.of(respuestaBDD);
                 }
             )
@@ -311,7 +330,7 @@ function eliminarPorNombre(respuestaBDD: RespuestaBDD) {
 
 }
 
-/************************** Interfaces ******************************/
+//Interfaz
 interface RespuestaBDD {
     mensaje: string;
     bdd: BDD;
