@@ -56,6 +56,17 @@ export class NoticiaService{
         this.arreglo[indiceNoticia] = nuevaNoticia;
         return this.arreglo[indiceNoticia]
     }
+
+    buscarPorId(idNoticia: number): Noticia{
+        const indiceNoticia = this.arreglo
+            .findIndex(
+                (noticia) => {
+                    return noticia.id ===idNoticia
+                }
+            );
+        return this.arreglo[indiceNoticia];
+
+    }
 }
 
 

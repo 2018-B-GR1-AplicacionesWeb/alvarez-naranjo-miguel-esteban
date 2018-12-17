@@ -149,13 +149,25 @@ export class AppController {
     @Get('inicio')
     inicio(
         @Res() response,
+
+        @Query('accion') accion: string,
+        @Query('titulo') titulo: string,
     ) {
+        let mensaje = undefined;
+        if(accion && titulo){
+
+            switch (accion){
+                case 'borrar':
+                    mensaje = `Registro ${titulo} eliminado`;
+            }
+        }
         response.render(
             'inicio',
             {
-                usuario: 'Adrian',
+                usuario: 'Miguel',
                 arreglo: this._noticiaService.arreglo, // AQUI!
                 booleano: false,
+                mensaje: mensaje,
             }
         );
     }
@@ -165,13 +177,15 @@ export class AppController {
         @Res() response,
         @Param('idNoticia') idNoticia: string,
     ) {
-        this._noticiaService.eliminar(Number(idNoticia));
-        response.redirect('/inicio')
+        const noticiaBorrada = this._noticiaService.eliminar(Number(idNoticia));
+        const parametrosConsulta =`?accion=borrar&titulo=${noticiaBorrada.titulo}`;
+        response.redirect('/inicio'+parametrosConsulta)
     }
 
     @Get('crear-noticia')
     crearNoticiaRuta(
         @Res() response
+
     ) {
         response.render(
             'crear-noticia'
@@ -190,6 +204,31 @@ export class AppController {
         )
     }
 
+    @Get('actualizar-noticia/:idNoticia')
+    actualizarNoticiaVista(
+        @Res() response,
+        @Param('idNoticia') idNoticia: string,
+    ){
+        const noticiaEncontrada = this._noticiaService.buscarPorId(+idNoticia) //con el simbolo + en javascript transforma en numero
+        response
+            .render(
+                'crear-noticia',
+                {
+                    noticia:noticiaEncontrada
+                }
+            )
+    }
+
+    @Post('actualizar-noticia/:idNoticia')
+    actualizarNoticiaMetodo(
+        @Res() response,
+        @Param('idNoticia') idNoticia: string,
+        @Body() noticia: Noticia
+    ){
+        noticia.id = +idNoticia;
+        this._noticiaService.actualizar(+idNoticia, noticia);
+        response.redirect('/inicio');
+    }
 
 }
 
