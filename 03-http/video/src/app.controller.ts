@@ -162,6 +162,9 @@ export class AppController {
 
                 case 'actualizar':
                     mensaje = `Registro ${titulo} actualizar`
+
+                case 'crear-noticia':
+                    mensaje = `Registro ${titulo} crear`
             }
         }
         response.render(
@@ -198,12 +201,18 @@ export class AppController {
     @Post('crear-noticia')
     crearNoticiaFuncion(
         @Res() response,
-        @Body() noticia: Noticia
+        @Body() noticia: Noticia,
+        @Param('idNoticia') idNoticia: string,
+
     ) {
+        noticia.id = +idNoticia;
+        const mensajeCrear = this._noticiaService.actualizar(+idNoticia, noticia)
+        const consultaCrear = `?accion=actualizar&titulo=${mensajeCrear.titulo}`
+        response.redirect('/inicio'+consultaCrear);
         this._noticiaService.crear(noticia)
 
         response.redirect(
-            '/inicio'
+            '/inicio'+consultaCrear
         )
     }
 
