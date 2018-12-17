@@ -13,13 +13,17 @@ import {
 import {AppService} from './app.service';
 import {Observable, of} from "rxjs";
 import {Request, Response} from "express";
+import {NoticiaService} from "./noticia.service";
 
 @Controller()  //decoradores
 // Controller('usuario')
 // http://localhost:3000/usuario
 export class AppController {
+
+
     // public servicio:AppService;
-    constructor(private readonly _appService: AppService) {  // NO ES UN CONSTRUCTOR
+    constructor(private readonly _appService: AppService,
+                private readonly _noticiaService: NoticiaService) {  // NO ES UN CONSTRUCTOR
         // this.servicio = servicio;
     }
 
@@ -46,12 +50,21 @@ export class AppController {
 
     @Get('adiosMundo') // url
     adiosMundo(): string {
-        return 'Adios Mundo';
+        return 'Adios mundo'
     }
 
     @Post('adiosMundo') // url
-    adiosMundoPOST(): string {
-        return 'Adios Mundo POST';
+    adiosMundoPOST(
+        @Res() response,
+    ) {
+        response.render(
+            'inicio',
+            {
+                usuario: 'Adrian',
+                arreglo: [],
+                booleano: true,
+            }
+        );
     }
 
     @Get('adiosMundoPromesa') // url
@@ -133,11 +146,115 @@ export class AppController {
     }
 
 
+    @Get('inicio')
+    inicio(
+        @Res() response,
+
+        @Query('accion') accion: string,
+        @Query('titulo') titulo: string,
+    ) {
+        let mensaje = undefined;
+        if(accion && titulo){
+
+            switch (accion){
+                case 'borrar':
+                    mensaje = `Registro ${titulo} eliminado`;
+
+                case 'actualizar':
+                    mensaje = `Registro ${titulo} actualizar`
+
+                case 'crear-noticia':
+                    mensaje = `Registro ${titulo} crear`
+            }
+        }
+        response.render(
+            'inicio',
+            {
+                usuario: 'Miguel',
+                arreglo: this._noticiaService.arreglo, // AQUI!
+                booleano: false,
+                mensaje: mensaje,
+            }
+        );
+    }
+
+    @Post('eliminar/:idNoticia')
+    eliminar(
+        @Res() response,
+        @Param('idNoticia') idNoticia: string,
+    ) {
+        const noticiaBorrada = this._noticiaService.eliminar(Number(idNoticia));
+        const parametrosConsulta =`?accion=borrar&titulo=${noticiaBorrada.titulo}`;
+        response.redirect('/inicio'+parametrosConsulta)
+    }
+
+    @Get('crear-noticia')
+    crearNoticiaRuta(
+        @Res() response
+
+    ) {
+        response.render(
+            'crear-noticia'
+        )
+    }
+
+    @Post('crear-noticia')
+    crearNoticiaFuncion(
+        @Res() response,
+        @Body() noticia: Noticia,
+        @Param('idNoticia') idNoticia: string,
+
+    ) {
+        noticia.id = +idNoticia;
+        const mensajeCrear = this._noticiaService.actualizar(+idNoticia, noticia)
+        const consultaCrear = `?accion=actualizar&titulo=${mensajeCrear.titulo}`
+        response.redirect('/inicio'+consultaCrear);
+        this._noticiaService.crear(noticia)
+
+        response.redirect(
+            '/inicio'+consultaCrear
+        )
+    }
+
+    @Get('actualizar-noticia/:idNoticia')
+    actualizarNoticiaVista(
+        @Res() response,
+        @Param('idNoticia') idNoticia: string,
+    ){
+        const noticiaEncontrada = this._noticiaService.buscarPorId(+idNoticia) //con el simbolo + en javascript transforma en numero
+        response
+            .render(
+                'crear-noticia',
+                {
+                    noticia:noticiaEncontrada
+                }
+            )
+    }
+
+    @Post('actualizar-noticia/:idNoticia')
+    actualizarNoticiaMetodo(
+        @Res() response,
+        @Param('idNoticia') idNoticia: string,
+        @Body() noticia: Noticia
+    ){
+        noticia.id = +idNoticia;
+        const mensajeActualizar = this._noticiaService.actualizar(+idNoticia, noticia)
+        const consulta = `?accion=actualizar&titulo=${mensajeActualizar.titulo}`
+        response.redirect('/inicio'+consulta);
+    }
+
 }
 
 
 export interface Usuario {
     nombre: string;
 }
+
+export interface Noticia {
+    id?: number;
+    titulo: string;
+    descripcion: string;
+}
+
 
 // http://localhost:3000
