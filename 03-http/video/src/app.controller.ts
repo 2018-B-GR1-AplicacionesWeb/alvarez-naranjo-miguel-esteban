@@ -159,6 +159,9 @@ export class AppController {
             switch (accion){
                 case 'borrar':
                     mensaje = `Registro ${titulo} eliminado`;
+
+                case 'actualizar':
+                    mensaje = `Registro ${titulo} actualizar`
             }
         }
         response.render(
@@ -226,8 +229,9 @@ export class AppController {
         @Body() noticia: Noticia
     ){
         noticia.id = +idNoticia;
-        this._noticiaService.actualizar(+idNoticia, noticia);
-        response.redirect('/inicio');
+        const mensajeActualizar = this._noticiaService.actualizar(+idNoticia, noticia)
+        const consulta = `?accion=actualizar&titulo=${mensajeActualizar.titulo}`
+        response.redirect('/inicio'+consulta);
     }
 
 }
