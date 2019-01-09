@@ -44,10 +44,10 @@ export class NoticiaController{
             const consulta: FindManyOptions<NoticiaEntity> = {
                 where: [
                     {
-                        titulo: Like(`%${busqueda}`)
+                        titulo: Like(`%${busqueda}%`)
         },
             {
-                descripcion: Like(`%${busqueda}`)
+                descripcion: Like(`%${busqueda}%`)
             }
         ]};
             noticias = await await this._noticiaService.buscar(consulta);
