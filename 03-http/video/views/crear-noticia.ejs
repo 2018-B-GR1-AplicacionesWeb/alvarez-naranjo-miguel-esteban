@@ -1,25 +1,29 @@
-<% const estaCreando = typeof noticia === "undefined"%>
-<h1><%= estaCreando? 'Crear':'Actualizar'%> Noticia</h1>\
-<p><%= estaCreando? 'Cree':'Actualice'%> una noticia</p>
-
 <!-- emmet -->
 
-<form action="/<%= estaCreando ? 'crear' : 'actualizar' %>-noticia/<%= estaCreando ? '' : noticia.id %>"
-method="post">
+<!--true ? 'si' : 'no'-->
+<%const estaCreando = typeof noticia == "undefined"%>
+
+<h1> <%= estaCreando === "undefined"?'Crear':'Actualizar'%> noticia</h1>
+<p><%= estaCreando === "undefined"?'Crear':'Actualizar'%> una noticia</p>
+
+<form action="/noticia/<%= estaCreando ? 'crear':'actualizar'%>-noticia/<%= estaCreando ? '':noticia.id%>" method="POST">
     <div>
-    <label for="titulo">TITULO</label>
-    <input id="Titulo" name="titulo" type="text" value="<%= estaCreando? '':noticia.titulo%>">
+        <label for="titulo">Titulo</label>
+        <input id="titulo"
+               name="titulo"
+               type="text"
+               value="<%= estaCreando ? '':noticia.titulo%>"
+        >
     </div>
     <div>
-    <label for="">Descripcion</label>
-    <textarea id="descripcion"
-              name="descripcion"
-              cols="30" rows="4">
-        <%= estaCreando? '':noticia.descripcion%>
-    </textarea>
+        <label for="descripcion"> </label>
+        <textarea name="descripcion" id="decripcion" cols="30" rows="4"><%= estaCreando ? '':noticia.descripcion%></textarea>
     </div>
 
-    <button><%= estaCreando ? 'Crear' : 'Actualizar' %> noticia</button>
+    <button><%= estaCreando ? 'Crear':'Actualizar'%>Noticia</button>
+
 </form>
 
-<a href="/inicio"><button>Regresar</button></a>
+<a href="/noticia/inicio">
+    <button>Regresar</button>
+</a>
