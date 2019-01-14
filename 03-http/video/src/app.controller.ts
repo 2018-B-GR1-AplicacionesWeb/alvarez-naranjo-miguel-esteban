@@ -8,12 +8,13 @@ import {
     Query,
     Param,
     Body,
-    Head, UnauthorizedException, Req, Res
+    Head, UnauthorizedException, Req, Res, Session
 } from '@nestjs/common';
 import {AppService} from './app.service';
 import {Observable, of} from "rxjs";
 import {Request, Response} from "express";
 import {NoticiaService} from "./noticia/noticia.service";
+import {UsuarioService} from "./usuario/usuario.service";
 
 @Controller()  //decoradores
 // Controller('usuario')
@@ -23,7 +24,8 @@ export class AppController {
 
     // public servicio:AppService;
     constructor(private readonly _appService: AppService,
-                private readonly _noticiaService: NoticiaService) {  // NO ES UN CONSTRUCTOR
+                private readonly _noticiaService: NoticiaService,
+                private readonly _usuarioService: UsuarioService) {  // NO ES UN CONSTRUCTOR
         // this.servicio = servicio;
     }
 
@@ -145,8 +147,41 @@ export class AppController {
 
     }
 
+    //app.controller.ts
+    @Get('login')
+    mostrarLogin(
+        @Res() res
+    ) {
+        res.render('login')
+    }
 
+    @Post('login')
+    @HttpCode(200)
+    async ejecutarLogin(
+        @Body('username') username:string,
+        @Body('password') password:string,
+        @Res() res,
+        @Session() sesion
+    ){
+        const respuesta = await this._usuarioService.autenticar(username,password);
+        console.log(sesion)
+        if (respuesta){
+            sesion.usuario = username;
+            res.send('ok');
+        } else {
+            res.redirect('login');
+        }
+    }
 
+    @Get('logout')
+    logout(
+        @Res() res,
+        @Session() sesion
+    ) {
+        sesion.username = undefined;
+        sesion.destroy();
+        res.redirect('login');
+    }
 
 }
 
