@@ -24,6 +24,7 @@
     "@nestjs/typeorm": "^5.2.2",
     "cookie-parser": "^1.4.3",
     "ejs": "^2.6.1",
+    "express-session": "^1.15.6",
     "mysql": "^2.16.0",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",

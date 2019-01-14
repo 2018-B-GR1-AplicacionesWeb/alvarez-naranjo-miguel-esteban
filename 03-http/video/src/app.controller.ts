@@ -1,154 +1,165 @@
 import {
+    Headers,
     Get,
     Controller,
-    InternalServerErrorException,
     HttpCode,
+    InternalServerErrorException,
     Post,
     Query,
     Param,
     Body,
-    Headers,
-    UnauthorizedException, Res, Req
+    Head, UnauthorizedException, Req, Res
 } from '@nestjs/common';
-
-import { AppService } from './app.service';
+import {AppService} from './app.service';
 import {Observable, of} from "rxjs";
-import {Request, Response} from 'express'
+import {Request, Response} from "express";
 import {NoticiaService} from "./noticia/noticia.service";
-import stringMatching = jasmine.stringMatching;
 
-// Un controlador solo sirve para recivir y responder una peticion
+@Controller()  //decoradores
+// Controller('usuario')
+// http://localhost:3000/usuario
+export class AppController {
 
-@Controller()   //decoradores -- una funcion antes de lo q sea ponga despues
 
-//Controler(usuario)  // usado para las rutas
-//http://localhost:3000/usuario
-export class AppController { // Export en otros archivos importar a esta clase
-
-    constructor(private readonly _servicio: AppService,
-                private readonly _noticiaService: NoticiaService) {
+    // public servicio:AppService;
+    constructor(private readonly _appService: AppService,
+                private readonly _noticiaService: NoticiaService) {  // NO ES UN CONSTRUCTOR
+        // this.servicio = servicio;
     }
 
-    // @Get()
-    // root(): string { // el nombre q se le de al metodo no importa
-    //
-    // @Get() // lo que acepta como parametro es la URL --> http://ip:puerto/url
-    // // @HttpCode(204) // lo que acepta como parametro es la URL --> http://ip:puerto/url
-    // raiz(
-    //     // nombre:string
-    //     @Query()todoslosQueryParams:any,
-    //     @Query('nombre')nombre:string,
-    // ): string {
-    //   // return this.appService.root();
-    //     console.log(todoslosQueryParams);
-    //     return 'Hola Mundo '+nombre;
-    // }
-    //
-    //   @Get('segmentoUno/segmentoDos/:idUsuario') // url  con parametro de ruta
-    //   parametroRuta(@Param('idUsuario')id) { //Paramtro de ruta
-    //       // return this.appService.root();
-    //       return id
-    //   }
-    //
-    //
-    // @Get('adiosMundo') // url
-    // adiosMundo(): string {
-    //   // return this.appService.root();
-    //     return 'Adios Mundo'
-    // }
-    //
-    // @Get('adiosMundoPromesa') // url
-    // adiosMundoPromesa(): Promise<string> {
-    //     const promessaAdios = (): Promise<string> =>{
-    //       return new Promise(
-    //           (resolve, reject) =>{
-    //              reject('Adios Mundo Promesa');
-    //           }
-    //       )
-    //     };
-    //     return promessaAdios();
-    // }
-    //
-    //   @Get('adiosMundoAsync') // url
-    //   @HttpCode(201)
-    //   async adiosMundoPromesaA(): Promise<string> {
-    //       const promessaAdios = (): Promise<string> =>{
-    //           return new Promise(
-    //               (resolve) =>{
-    //                   resolve('Adios Mundo Promesa');
-    //               }
-    //           )
-    //       };
-    //       try {
-    //           const  respuesta = await promessaAdios();
-    //           return respuesta;
-    //       }catch (e) {
-    //           console.error(e);
-    //           throw new InternalServerErrorException({mensaje: 'error del servidor'});
-    //       }
-    //   }
-    //
-    //   @Get('adiosMundoObservable')
-    //   adiosMundoPObservable(): Observable<string> {
-    //       const respuestaa = of('AdiosMundo');
-    //       return respuestaa;
-    //   }
-    //
-    //   // @Post('adiosMundoPost')
-    //   // adiosMundoPOST(): string {
-    //   //     return 'Adios Mundo Post';
-    //   // }
-    //
-    //   @Post('crearUsuario')
-    //   @HttpCode(201) //se usa cuando_todo sale bien mientras que el throw es para cuando algo sale mal
-    //   crearUsuario(
-    //       @Body() usuario: Usuario,
-    //       @Body('nombre') nombre: string,
-    //       @Headers() cabeceras,
-    //       @Headers('seguridad') codigo,
-    //       @Res() res: Response,
-    //       @Req() req: Request | any,
-    //   ){
-    //       console.log('Cookies: ',req.cookies); //Solo lectura
-    //       console.log('Cookies: ',req.secret); //Solo lectura
-    //       console.log('Cookies Seguras: ',req.signedCookies); //Solo lectura
-    //       console.log(usuario);
-    //       // console.log(cabeceras);
-    //       if(codigo==='1234'){
-    //           const bdd = this._servicio.crearUsuario(usuario);
-    //           res.append('token','5678'); // el codigo se queda aqui
-    //           res.cookie('app','web');
-    //           res.cookie('segura','secreto',{
-    //               // secure: true,
-    //               signed: true
-    //           });
-    //           // res.send('ok');
-    //           res.json(bdd);
-    //           // return 'ok';
-    //       }else{
-    //           throw new UnauthorizedException(
-    //               {
-    //                   mensaje: 'Error de autorizacion',
-    //                   error: 401
-    //               }
-    //           )
-    //       }
-    //   }
+
+    @Get() // http://ip:puerto
+    // @Get('crear')
+    // http://localhost:3000/usuario/crear?nombre=Adrian
+    @HttpCode(204) // status
+    raiz(
+        @Query() todosQueryParams: any,  //{nombre:"Adrian"}
+        @Query('nombre') nombre: string, // adrian
+    ): string {
+        console.log(todosQueryParams);
+        return 'Hola Mundo' + nombre;
+    }
+
+    @Get('segmentoUno/segmentoDos/:idUsuario')  // PARAMETRO RUTA
+    // http://localhost:3000/usuario/segmentoUno/segmentoDos/10
+    parametroRuta(
+        @Param('idUsuario') id
+    ) {
+        return id;
+    }
+
+    @Get('adiosMundo') // url
+    adiosMundo(): string {
+        return 'Adios mundo'
+    }
+
+    @Post('adiosMundo') // url
+    adiosMundoPOST(
+        @Res() response,
+    ) {
+        response.render(
+            'inicio',
+            {
+                usuario: 'Adrian',
+                arreglo: [],
+                booleano: true,
+            }
+        );
+    }
+
+    @Get('adiosMundoPromesa') // url
+    adiosMundoPromesa(): Promise<string> {
+        const promesaAdios = (): Promise<string> => {
+            return new Promise(
+                (resolve) => {
+                    resolve('Adios Mundo');
+                }
+            )
+        };
+        return promesaAdios();
+    }
+
+
+    @Get('adiosMundoAsync') // url
+    @HttpCode(201)
+    async adiosMundoAsync() {
+        const promesaAdios = (): Promise<string> => {
+            return new Promise(
+                (resolve, reject) => {
+                    reject('Adios Mundo');
+                }
+            )
+        };
+        try {
+            const respuesta: string = await promesaAdios();
+            return respuesta;
+        } catch (e) {
+            console.error(e);
+            throw new InternalServerErrorException({mensaje: 'Error servidor'})
+        }
+
+    }
+
+    @Get('adiosMundoObservable') // url
+    adiosMundoObservable(): Observable<string> {
+        const respuesta$ = of('Adios Mundo');
+        return respuesta$;
+    }
+
+    @Post('crearUsuario')
+    @HttpCode(200)  // Codigo OK
+    crearUsuario(
+        @Body() usuario: Usuario,
+        @Body('nombre') nombre: string,
+        @Headers() cabeceras, // Cabeceras de peticion,
+        @Headers('seguridad') codigo, // Cabeceras de peticion
+        @Res() res: Response,
+        @Req() req: Request | any,
+    ) {
+        // crear usuario
+        console.log('Cookies', req.cookies);  // LEIDO
+        console.log('Cookies', req.secret);
+        console.log('Cookies Seguras', req.signedCookies);  // LEIDO
+        console.log(usuario);
+        console.log(cabeceras);
+
+        if (codigo === '1234') {
+
+            const bdd = this._appService.crearUsuario(usuario);
+
+            res.append('token', '5678'); // AQUI
+            res.cookie("app", "web"); // INSEGURA
+            res.cookie("segura", "secreto", {
+                signed: true
+            });
+
+            res.json(bdd);
+
+        } else {
+            throw new UnauthorizedException({  // MALO
+                mensaje: 'Error de autorizacion',
+                error: 401
+            })
+        }
+
+
+    }
+
 
 
 
 }
+
 
 export interface Usuario {
-    nombre:string;
+    nombre: string;
 }
+
 export interface Noticia {
-    id?: number,
-    titulo:string;
-    descripcion:string;
+    id?: number;
+    titulo: string;
+    descripcion: string;
 }
 
-
-// >npm run start:dev
 
 // http://localhost:3000
