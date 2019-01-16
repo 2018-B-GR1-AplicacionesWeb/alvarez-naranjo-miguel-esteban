@@ -15,7 +15,7 @@ import {UsuarioModule} from "./usuario/usuario.module";
         TypeOrmModule.forRoot({
             type: 'mysql',
             host: 'localhost',
-            port: 32771,
+            port: 32769,
             username: 'miguel',
             password: '12345678',
             database: 'web',
@@ -39,3 +39,6 @@ import {UsuarioModule} from "./usuario/usuario.module";
     ],      // Van los Servicios
 })
 export class AppModule {}
+
+//servidor EJS -> HTML CSS JS -> Pagina web
+// Servidor web estatico -> pdf -> PDF?

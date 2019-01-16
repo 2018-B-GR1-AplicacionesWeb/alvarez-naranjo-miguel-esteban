@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title>EJEMPLO</title>
+        <meta name="description"
+              content="Ejemplo de pagina web">
+        <meta name="keywords" content="HTML, CSS, JS, NEST">  <!--en content es la informacion que se muestra en el buscador -->
+
+        <meta name="author" content="Escuela Politecnica Nacional">
+
+        <!-- para escribir estilos siempre van antes de que se acabe la cabecera -->
+        <style>
+            /*
+            BUSQUEDA {
+                PROPIEDAD: VALOR-PROPIEDAD;
+                PROPIEDAD: VALOR-PROPIEDAD;
+                PROPIEDAD: VALOR-PROPIEDAD;
+                PROPIEDAD: VALOR-PROPIEDAD;
+                PROPIEDAD: VALOR-PROPIEDAD;
+            }
+
+            CLASS {
+
+            }
+
+            IDENTIFICADOR {
+
+            }
+
+            ORDEN DE IMPORTANCIA
+            ID > CLASE > ETIQUETA
+
+            se puede tener busquedas complejas
+            Etiqueta.Clase{
+
+            }
+            */
+            body {
+                background-color: skyblue;
+            }
+
+            p {
+                background-color: aliceblue;
+            }
+            .rojo {
+                background-color: red;
+            }
+
+            .amarillo {
+                background-color: yellow;
+            }
+
+            .azul {
+                background-color: blue;
+            }
+
+            #titulo{
+                background-color: greenyellow;
+
+            }
+
+            p.amarillo{
+                background-color: pink;
+            }
+
+        </style>
+    </head>
+    <body>
+        <h1 id="titulo" class="rojo"> Titulo </h1>
+        <p>hola</p>
+        <p class = "rojo">Mundo</p>
+
+        <p class="amarillo azul rojo">  WTF!! </p>  <!-- el color que queda es el ultimo definido en el css-->
+
+        <h1 class="amarillo">Titulo 2</h1>
+        <p class="amarillo">Contenido 2</p>
+
+
+    <!-- los scripts van al finalizar el body -->
+    <script>
+        console.log('hola web');
+    </script>
+    </body>
+</html>
