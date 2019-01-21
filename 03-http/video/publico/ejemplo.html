@@ -8,62 +8,10 @@
 
         <meta name="author" content="Escuela Politecnica Nacional">
 
+        <link rel="stylesheet" href="/CSS/estilos.css">
+
         <!-- para escribir estilos siempre van antes de que se acabe la cabecera -->
-        <style>
-            /*
-            BUSQUEDA {
-                PROPIEDAD: VALOR-PROPIEDAD;
-                PROPIEDAD: VALOR-PROPIEDAD;
-                PROPIEDAD: VALOR-PROPIEDAD;
-                PROPIEDAD: VALOR-PROPIEDAD;
-                PROPIEDAD: VALOR-PROPIEDAD;
-            }
 
-            CLASS {
-
-            }
-
-            IDENTIFICADOR {
-
-            }
-
-            ORDEN DE IMPORTANCIA
-            ID > CLASE > ETIQUETA
-
-            se puede tener busquedas complejas
-            Etiqueta.Clase{
-
-            }
-            */
-            body {
-                background-color: skyblue;
-            }
-
-            p {
-                background-color: aliceblue;
-            }
-            .rojo {
-                background-color: red;
-            }
-
-            .amarillo {
-                background-color: yellow;
-            }
-
-            .azul {
-                background-color: blue;
-            }
-
-            #titulo{
-                background-color: greenyellow;
-
-            }
-
-            p.amarillo{
-                background-color: pink;
-            }
-
-        </style>
     </head>
     <body>
         <h1 id="titulo" class="rojo"> Titulo </h1>
@@ -74,11 +22,21 @@
 
         <h1 class="amarillo">Titulo 2</h1>
         <p class="amarillo">Contenido 2</p>
+        <p class="amarillo azul">Contenido 2</p>
 
+        <h1>titulo 3   </h1>
+        <p>Descripcion 3</p>
+        <p>Otras noticias</p>
+
+        <ul>
+            <li>Adios <span>Mundo</span></li>
+            <li>ola <span>k ase</span></li>
+            <li>HOLA MUNDO</li>
+        </ul>
+
+        <li>NO <span>EJEMPLO</span></li>
 
     <!-- los scripts van al finalizar el body -->
-    <script>
-        console.log('hola web');
-    </script>
+    <script src="/js/aplicacion.js"></script>
     </body>
 </html>

@@ -1,0 +1,80 @@
+/*
+         BUSQUEDA {
+             PROPIEDAD: VALOR-PROPIEDAD;
+             PROPIEDAD: VALOR-PROPIEDAD;
+             PROPIEDAD: VALOR-PROPIEDAD;
+             PROPIEDAD: VALOR-PROPIEDAD;
+             PROPIEDAD: VALOR-PROPIEDAD;
+         }
+
+         CLASS {
+
+         }
+
+         IDENTIFICADOR {
+
+         }
+
+         ORDEN DE IMPORTANCIA
+         ID > busqueda compleja > CLASE > ETIQUETA
+
+         se puede tener busquedas complejas
+         Etiqueta.Clase{
+
+         }
+         query selectors
+
+         Etiqueta.Clase.Clase.clase.clase.clase{
+
+         }
+
+         Etiqueta_Antes + Etiqueta_Despues{
+         }
+
+         ETIQUETA_PADRE > ETIQUETA_HIJO > ETIQUETA_NIETO{
+         }
+         */
+body {
+    background-color: skyblue;
+}
+
+p {
+    background-color: aliceblue;
+}
+.rojo {
+    background-color: red;
+}
+
+.amarillo {
+    background-color: yellow;
+}
+
+.azul {
+    background-color: blue;
+}
+
+#titulo{
+    background-color: greenyellow;
+
+}
+
+p.amarillo{
+    background-color: pink;
+}
+p.amarillo.azul{
+    background-color: black;
+    color: white;
+}
+
+h1 + p{
+    background-color: green;
+}
+
+h1 + p.amarillo{
+    background-color: orange;
+}
+
+ul>li>span {
+    background-color: purple;
+    color:white;
+}
