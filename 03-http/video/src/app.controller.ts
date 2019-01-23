@@ -147,31 +147,37 @@ export class AppController {
 
     }
 
-    //app.controller.ts
+
+    // app.controller.ts
     @Get('login')
     mostrarLogin(
         @Res() res
     ) {
-        res.render('login')
+        res.render('login');
     }
 
     @Post('login')
     @HttpCode(200)
     async ejecutarLogin(
-        @Body('username') username:string,
-        @Body('password') password:string,
+        @Body('username') username: string,
+        @Body('password') password: string,
         @Res() res,
         @Session() sesion
-    ){
-        const respuesta = await this._usuarioService.autenticar(username,password);
-        console.log(sesion)
-        if (respuesta){
+    ) {
+        const respuesta = await this._usuarioService
+            .autenticar(username, password);
+
+        console.log(sesion);
+
+        if (respuesta) {
             sesion.usuario = username;
             res.send('ok');
         } else {
             res.redirect('login');
         }
+
     }
+
 
     @Get('logout')
     logout(
@@ -182,6 +188,7 @@ export class AppController {
         sesion.destroy();
         res.redirect('login');
     }
+
 
 }
 

@@ -1,13 +1,15 @@
-//noticia.controller.ts
-import {Body, Controller, Get, Param, Post, Query, Res} from "@nestjs/common";
+// noticia.controller.ts
+
+import {BadRequestException, Body, Controller, Get, Param, Post, Query, Res} from "@nestjs/common";
 import {Noticia} from "../app.controller";
 import {NoticiaService} from "./noticia.service";
-import {__await} from "tslib";
 import {NoticiaEntity} from "./noticia-entity";
 import {FindManyOptions, Like} from "typeorm";
+import {CreateNoticiaDto} from "./dto/create-noticia.dto";
+import {validate, ValidationError} from "class-validator";
 
 @Controller('noticia')
-export class NoticiaController{
+export class NoticiaController {
 
     constructor(private readonly _noticiaService: NoticiaService) {
 
@@ -16,81 +18,88 @@ export class NoticiaController{
     @Get('inicio')
     async inicio(
         @Res() response,
-        @Query('busqueda') busqueda:string,
-        @Query('accion') accion:string,
-        @Query('titulo') titulo: string,
-        @Body() text
+        @Query('busqueda') busqueda: string,
+        @Query('accion') accion: string,
+        @Query('titulo') titulo: string
     ) {
+
         let mensaje = undefined;
-        if(accion && titulo){
+        let clase = undefined;
+
+        if (accion && titulo) {
             switch (accion) {
                 case 'borrar':
-                    mensaje = `Registro ${titulo} eliminado`;
+                    mensaje = `Registro ${titulo} eliminado.`;
+                    clase = 'alert alert-danger';
+                    break;
+
                 case 'actualizar':
-                    mensaje = `Registro ${titulo} actualizado`;
+                    mensaje = `Registro ${titulo} actualizado.`;
+                    clase = 'alert alert-info';
+                    break;
+
                 case 'crear':
-                    mensaje = `Registro ${titulo} creado`;
-                case 'buscar':
-                    mensaje = `Registro ${titulo} creado`;
+                    mensaje = `Registro ${titulo} creado.`;
+                    clase = 'alert alert-success';
+                    break;
             }
-
         }
-        console.log(text);
-
-        // const noticias = await this._noticiaService.buscar();
 
         let noticias: NoticiaEntity[];
-        if (busqueda){
+
+        if (busqueda) {
+
             const consulta: FindManyOptions<NoticiaEntity> = {
                 where: [
                     {
                         titulo: Like(`%${busqueda}%`)
-        },
-            {
-                descripcion: Like(`%${busqueda}%`)
-            }
-        ]};
-            noticias = await await this._noticiaService.buscar(consulta);
+                    },
+                    {
+                        descripcion: Like(`%${busqueda}%`)
+                    }
+                ]
+            };
+
+            noticias = await this._noticiaService.buscar(consulta);
+
         } else {
-            noticias = await this._noticiaService.buscar()
+            noticias = await this._noticiaService.buscar();
         }
+
 
         response.render(
             'inicio',
             {
-                usuario:'Miguel',
-                arreglo: noticias,
+                usuario: 'Adrian',
+                arreglo: noticias, // AQUI!
                 booleano: false,
-                mensaje: mensaje
+                mensaje: mensaje,
+                clase: clase
             }
         );
-    }
-
-    @Get('inicio')
-    inicioPOST(
-        @Res() response,
-        @Body() text
-    ) {
-
-        console.log(text)
-
     }
 
     @Post('eliminar/:idNoticia')
     async eliminar(
         @Res() response,
-        @Param('idNoticia') ideNoticia:string,
-    ){
-        const noticia = await this._noticiaService.buscarPorId(+ideNoticia);
-        await this._noticiaService.eliminar(Number(ideNoticia));
-        const parametroConsulta = `?accion=borrar&titulo=${noticia.titulo}`;
-        response.redirect('/noticia/inicio'+parametroConsulta);
+        @Param('idNoticia') idNoticia: string,
+    ) {
+
+        const noticia = await this._noticiaService.buscarPorId(+idNoticia);
+
+        await this._noticiaService.eliminar(Number(idNoticia));
+
+        const parametrosConsulta = `?accion=borrar&titulo=${
+            noticia.titulo
+            }`;
+
+        response.redirect('/noticia/inicio' + parametrosConsulta)
     }
 
     @Get('crear-noticia')
-    crearNoticia(
-        @Res() response,
-    ){
+    crearNoticiaRuta(
+        @Res() response
+    ) {
         response.render(
             'crear-noticia'
         )
@@ -99,54 +108,70 @@ export class NoticiaController{
     @Post('crear-noticia')
     async crearNoticiaFuncion(
         @Res() response,
-        @Body() noticia:Noticia
-    ){
-        // const noticiaCreada = this._noticiaService.crear(noticia);
-        // const parametroConsulta = ?accion=crear&titulo=${noticiaCreada.titulo};
-        await this._noticiaService.crear(noticia);
-        response.redirect('/noticia/inicio');
-        // response.redirect(
-        //     '/inicio'
-        // )
+        @Body() noticia: Noticia
+    ) {
+
+        const objetoValidacionNoticia = new CreateNoticiaDto();
+
+        objetoValidacionNoticia.titulo = noticia.titulo;
+        objetoValidacionNoticia.descripcion = noticia.descripcion;
+
+        const errores: ValidationError[] =
+            await validate(objetoValidacionNoticia);
+
+        const hayErrores = errores.length>0;
+
+        if(hayErrores){
+            console.error(errores);
+            // redirect crear noticia, Y
+            // En crear noticia deberian de mostrar mensajes
+            // (Como en la pantalla de INICIO)
+            throw new BadRequestException({mensaje:'Error de validacion'})
+        }else{
+            const respuesta = await this._noticiaService.crear(noticia);
+
+            const parametrosConsulta = `?accion=crear&titulo=${noticia.titulo}`;
+
+            response.redirect(
+                '/noticia/inicio' + parametrosConsulta
+            )
+        }
+
     }
 
     @Get('actualizar-noticia/:idNoticia')
     async actualizarNoticiaVista(
         @Res() response,
-        @Param('idNoticia') idNoticia: string
-    ){
-        //El "+" le transforma en numero a un string
-        //Numerico
-        // const noticiaEncontrada = this._noticiaService.buscarPorId(+idNoticia)
+        @Param('idNoticia') idNoticia: string,
+    ) {
+        // El "+" le transforma en numero a un string
+        // numerico
         const noticiaEncontrada = await this._noticiaService
             .buscarPorId(+idNoticia);
-        response.render(
-            'crear-noticia',
-            {
-                noticia: noticiaEncontrada
-            }
-        )
+
+        response
+            .render(
+                'crear-noticia',
+                {
+                    noticia: noticiaEncontrada
+                }
+            )
+
+
     }
 
     @Post('actualizar-noticia/:idNoticia')
-    async actualizarNoticiaMetodo(
+    async actualizarNoticiaMetedo(
         @Res() response,
         @Param('idNoticia') idNoticia: string,
-        @Body () noticia: Noticia
+        @Body() noticia: Noticia
     ) {
-        noticia.id = +idNoticia
-        // const noticiaActualizada = this._noticiaService.actulizar(+idNoticia, noticia);
-        // const parametroConsulta = ?accion=actualizar&titulo=${noticiaActualizada.titulo};
-        await this._noticiaService.actulizar(noticia);
-        response.redirect('/noticia/inicio');
-        // response.redirect(
-        //     '/inicio'
-        // )
-    }
-}
+        noticia.id = +idNoticia;
+        await this._noticiaService.actualizar(noticia);
 
-export interface Noticia {
-    id?: number,
-    titulo:string;
-    descripcion:string;
+        const parametrosConsulta = `?accion=actualizar&titulo=${noticia.titulo}`;
+
+        response.redirect('/noticia/inicio' + parametrosConsulta);
+
+    }
 }

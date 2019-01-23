@@ -1,88 +1,139 @@
-<% const existeMensaje = typeof mensaje !== "undefined"%>
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Gestion de Noticias</title>
+    <link rel="stylesheet"
+          href="/bootstrap/css/bootstrap.css">
 
-<style>
-    table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-</style>
+    <link rel="stylesheet" href="/css/estilos-generales.css">
+</head>
+<body>
 
-<% if(existeMensaje){%>
-<p>Mensaje: <%=mensaje%></p>
-<% }%>
+<div class="container">
 
-<!-- h1 -> header 1  -->
-<h1> <%= usuario %> </h1>
-<% var miguel = 'Alvarez'; %>
-<!-- h2 -> header 2  -->
-<h2>  <%= miguel %>  </h2>
+    <% const existeMensaje = typeof mensaje !== "undefined" %>
 
-<% if(booleano) { %>
-    <!-- p -> parrafo  -->
-    <p>Usted creo una noticia</p>
-<% } %>
-
-<!-- ul -> unordered list  -->
-<!-- ol -> ordered list  -->
-<!--<ul>-->
-<!-- a->ancla -->
-
-<form method="get" action="/noticia/inicio" method="get">
-    <label for="busqueda">Busqueda</label>
-    <input id="busqueda" type="text" name="busqueda">
-    <button>Buscar</button>
-</form>
-
-<a href="/noticia/crear-noticia">
-    <button>Crear Noticia</button>
-</a>
+    <% if(existeMensaje){ %>
+        <div class="<%= clase %>" role="alert">
+            <span class="font-weight-bold">
+                MENSAJE
+            </span> : <%= mensaje %>
+        </div>
+    <% } %>
 
 
+    <h1>Gestion de noticias</h1>
 
-<!--<% arreglo.forEach( (noticia)=> { %>-->
-<!--&lt;!&ndash; li -> list item  &ndash;&gt;-->
-<!--<li>-->
-<!--<%= noticia.titulo %>-->
-<!-- - -->
-<!--<%= noticia.descripcion %>-->
-<!--<form action="/adiosMundo" method="POST">-->
-<!--&lt;!&ndash;<button type="button"> clickea sin problemas</button>&ndash;&gt;-->
-<!--&lt;!&ndash;<button>Yo tambien envio informacion</button>&ndash;&gt;-->
-<!--<button type="submit"> Eliminar</button>-->
-<!--</form>-->
-<!--</li>-->
-<!--<% }) %>-->
+    <p>Busque, cree actualice y elimine noticias. Puede buscar noticias por el titulo o la descripcion.</p>
 
-<!--</ul>-->
+    <!-- ul -> unordered list  -->
+    <!-- ol -> ordered list  -->
 
-<table>
-    <!-- tr -> table row -->
-    <tr>
-        <!-- th -> table header -->
-        <th>Identicador</th>
-        <th>Nombre</th>
-        <th>Acciones</th>
-    </tr>
-    <!-- tr -> table row -->
-    <% arreglo.forEach( (noticia)=> { %>
+    <!-- a -> anchor -->
+
+    <form method="get" action="/noticia/inicio">
+
+        <div class="row">
+            <div class="col-sm-9">
+
+                <div class="form-group">
+
+                    <label for="busqueda">Busqueda</label>
+
+                    <input id="busqueda"
+                           type="text"
+                           name="busqueda"
+                           class="form-control">
+                </div>
+
+            </div>
+            <div class="col-sm-3">
+
+                <button
+                        class="btn btn-outline-success btn-block espaciado-busqueda">
+
+                    Buscar
+
+                </button>
+
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col-sm-9">
+
+        </div>
+        <div class="col-sm-3">
+            <a href="/noticia/crear-noticia"
+               class="quitar-link">
+
+                <button class="btn btn-outline-success btn-block">
+
+                    Crear noticia
+
+
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <h2>Lista de Noticias</h2>
+    <p>Listado de las noticias, actualice o elimine noticias.</p>
+
+    <table class="table table-hover">
+        <!-- tr -> table row -->
+        <thead>
         <tr>
-            <!-- td -> table detail -->
-            <td><%= noticia.titulo %></td>
-            <td><%= noticia.descripcion %></td>
-            <td>
-                <form action="/noticia/eliminar/<%= noticia.id%>" method="POST">
-                    <!--<button type="button"> clickea sin problemas</button>-->
-                    <!--<button>Yo tambien envio informacion</button>-->
-                    <button type="submit"> Eliminar</button>
-                </form>
-                <a href="/noticia/actualizar-noticia/<%= noticia.id %>">
-                    <button>Actualizar Noticia</button>
-                </a>
-            </td>
+            <!-- th -> table header -->
+            <th width="30%">Titulo</th>
+            <th width="50%">Descripcion</th>
+            <th width="20%">Acciones</th>
         </tr>
-    <% }) %>
-</table>
+        </thead>
+        <!-- tr -> table row -->
+        <tbody>
+        <% arreglo.forEach( (noticia)=> { %>
+            <tr>
+                <!-- td -> table detail -->
+                <td><%= noticia.titulo %></td>
+                <td><%= noticia.descripcion %></td>
+                <td>
+                    <form action="/noticia/eliminar/<%= noticia.id %>" method="POST">
+                        <!--<button type="button"> clickea sin problemas</button>
+                        <button>Yo tambien envio informacion</button>
+                        -->
+                        <button class="btn btn-outline-danger btn-block espaciado-boton"
+                                type="submit">
+                            Eliminar
+                        </button>
+                    </form>
+                    <a  href="/noticia/actualizar-noticia/<%= noticia.id %>"
+                        class="quitar-link">
+                        <button
+                                class="btn btn-outline-info btn-block espaciado-boton">
+                            Actualizar
+                        </button>
+                    </a>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
 
 
+    <script>
+        function imprimirEnConsola(evento){
+            evento.preventDefault();
+            console.log('ASDASDAS');
+        }
+    </script>
+</div>
 
-<!--//true ? 'si' : 'no'-->
+
+</body>
+</html>
